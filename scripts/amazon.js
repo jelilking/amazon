@@ -55,10 +55,9 @@ products.forEach((product) => {
     `;
 });
 
-// console.log(productsHTML);
-
 const productsContainer = document.querySelector(".js-products-grid");
 productsContainer.innerHTML = productsHTML;
+
 // Event Listeners for add to cart buttons
 
 const addToCartBtn = document.querySelectorAll(".js-add-to-cart");
@@ -82,6 +81,13 @@ addToCartBtn.forEach((button) => {
       });
     }
 
-    console.log(cart);
+    let cartQuantity = 0;
+
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+    });
+
+    const addToCartQuantity = document.querySelector(".js-cart-quantity");
+    addToCartQuantity.innerHTML = cartQuantity;
   });
 });
