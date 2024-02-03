@@ -1,7 +1,7 @@
-import { cart, removeFromCart } from "../data/cart.js";
+import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
+import { cart, removeFromCart, updateDeliveryOption } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
-import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import { deliveryOptions } from "../data/deliveryOptions.js";
 
 // const today = dayjs();
@@ -82,44 +82,6 @@ cart.forEach((cartItem) => {
     `;
 });
 
-// function deliveryOptionsHTML(matchingProduct, cartItem) {
-//   let html = "";
-
-//   deliveryOptions.forEach((deliveryOption) => {
-//     const today = dayjs();
-//     const deliveryDate = today.add(deliveryOption.deliveryDays, "days");
-//     const dateString = deliveryDate.format("dddd, MMMM D");
-//     // console.log(dateString);
-
-//     const priceString =
-//       deliveryOption.priceCents === 0
-//         ? "FREE"
-//         : `$${formatCurrency(deliveryOption.priceCents)} - `;
-
-//     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-//     console.log(isChecked);
-
-//     html += `
-//   <div class="delivery-option">
-//     <input type="radio"
-//       ${isChecked ? "checked" : ""}
-//       class="delivery-option-input" name="delivery-option-${
-//         matchingProduct.id
-//       }">
-//     <div>
-//       <div class="delivery-option-date">
-//         ${dateString}
-//       </div>
-//       <div class="delivery-option-price">
-//         ${priceString} Shipping
-//       </div>
-//     </div>
-//   </div>`;
-//   });
-
-//   return html;
-// }
-
 function deliveryOptionsHTML(matchingProduct, cartItem) {
   let html = "";
 
@@ -139,7 +101,9 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
     );
 
     html += `
-      <div class="delivery-option">
+      <div class="delivery-option js-delivery-options" 
+      data-product-id="${matchingProduct.id}"
+      data-delivery-option-id="${deliveryOption.id}">
         <input type="radio"
           ${isChecked ? "checked" : ""}
           class="delivery-option-input" name="delivery-option-${
@@ -175,5 +139,13 @@ deleteLink.forEach((link) => {
     );
 
     container.remove();
+  });
+});
+
+const deliveryOptionEl = document.querySelectorAll(".js-delivery-options");
+deliveryOptionEl.forEach((element) => {
+  element.addEventListener("click", () => {
+    const { productId, deliveryOptionId } = element.dataset;
+    updateDeliveryOption(productId, deliveryOptionId);
   });
 });
